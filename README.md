@@ -22,6 +22,6 @@ This is a simple Todo application built using React and Vite, styled with Tailwi
 ## Installation
 
 1. **Clone the repository**:
-   ```bash
- https://github.com/hameed-fu/todo-app-react-vite
+   ```bash 
+   https://github.com/hameed-fu/todo-app-react-vite
    cd todo-app-react-vite
