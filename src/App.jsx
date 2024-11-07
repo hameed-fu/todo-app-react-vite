@@ -14,9 +14,10 @@ function App() {
   };
 
   const deleteTodo = async (id) => {
-    let data = await axios.get(`https://dummyjson.com/todos/${id}`, {
+    let data = await axios.delete(`https://dummyjson.com/todos/${id}`, {
       method: "DELETE",
     });
+    console.log(data);
     fetchTodos();
   };
 
@@ -25,6 +26,8 @@ function App() {
   const [todo, setTitle] = useState("");
 
   const openModal = (todo = null) => {
+
+    console.log(todo);
     setIsModalOpen(true);
     setCurrentTodo(todo);
     setTitle(todo ? todo.todo : "");
@@ -38,27 +41,47 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     if (todo == "") {
       alert("Please enter title");
       return false;
     }
-    try {
-      let data = await axios.post("https://dummyjson.com/todos/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        userId: 5,
-        body: {
-          todo,
-          completed: false,
-        },
-      });
 
-      setTitle("");
-      console.log(data.statusText);
-      closeModal();
-    } catch (e) {
-      console.log(e.error)
+
+    if(currentTodo == null){
+      try {
+        let data = await axios.post("https://dummyjson.com/todos/add", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          userId: 5,
+          body: {
+            todo,
+            completed: false,
+          },
+        });
+  
+        setTitle("");
+        console.log(data);
+        closeModal();
+      } catch (e) {
+        console.log(e.error)
+      }
+
+    }else{
+      try {
+        let udpated = await axios.put(`https://dummyjson.com/todos/${currentTodo.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: {
+            completed: true,
+          },
+        });
+
+        console.log("updated record", udpated);
+        closeModal();
+      } catch (e) {
+        console.log(e.error)
+      }
     }
   };
 
