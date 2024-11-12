@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTheme } from "./context/ThemeContext";
+import ThemeToggle from "./ThemeToggle";
 
 function App() {
   const [todos, setTodos] = useState([]);
@@ -26,7 +28,6 @@ function App() {
   const [todo, setTitle] = useState("");
 
   const openModal = (todo = null) => {
-
     console.log(todo);
     setIsModalOpen(true);
     setCurrentTodo(todo);
@@ -41,14 +42,13 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (todo == "") {
       alert("Please enter title");
       return false;
     }
 
-
-    if(currentTodo == null){
+    if (currentTodo == null) {
       try {
         let data = await axios.post("https://dummyjson.com/todos/add", {
           method: "POST",
@@ -59,28 +59,30 @@ function App() {
             completed: false,
           },
         });
-  
+
         setTitle("");
         console.log(data);
         closeModal();
       } catch (e) {
-        console.log(e.error)
+        console.log(e.error);
       }
-
-    }else{
+    } else {
       try {
-        let udpated = await axios.put(`https://dummyjson.com/todos/${currentTodo.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: {
-            completed: true,
-          },
-        });
+        let udpated = await axios.put(
+          `https://dummyjson.com/todos/${currentTodo.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: {
+              completed: true,
+            },
+          }
+        );
 
         console.log("updated record", udpated);
         closeModal();
       } catch (e) {
-        console.log(e.error)
+        console.log(e.error);
       }
     }
   };
@@ -101,6 +103,10 @@ function App() {
     }
   }
 
+  const { theme } = useTheme();
+
+  
+
   return (
     <>
       <div className="container mx-auto px-4 py-8">
@@ -112,7 +118,8 @@ function App() {
         </button>
         <h2 className="text-2xl font-semibold mb-4">Todos</h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
+          <ThemeToggle />
+          <table className={`min-w-full border border-gray-200 shadow-md rounded-lg ${theme === 'dark' ? 'dark-mode' : 'light-mode'}`}>
             <thead>
               <tr className="bg-gray-100 text-gray-700 uppercase text-sm">
                 <th className="py-3 px-6 text-left">Title</th>
@@ -130,7 +137,7 @@ function App() {
                   <td className="py-4 px-6 text-center">
                     <button
                       className="text-blue-500 hover:underline mr-2"
-                      onClick={() => openModal(todo)} 
+                      onClick={() => openModal(todo)}
                     >
                       Edit
                     </button>
